@@ -1,0 +1,13 @@
+[toolchain]
+anchor_version = "0.31.1"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+earn = "irfCxPWpdsFS3fH73dfNZPpYfyABz5Xu1LYgtQnearn"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"

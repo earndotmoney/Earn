@@ -1,0 +1,14 @@
+node_modules/
+target/
+test-ledger/
+validator.log
+data/
+keys/
+.env
+*.env
+tests/fixtures/*.json
+tests/fixtures/earn-mints/
+web/node_modules/
+web/dist/
+*.tsbuildinfo
+tools/grind/target/

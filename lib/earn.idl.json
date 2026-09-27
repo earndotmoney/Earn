@@ -1,0 +1,1202 @@
+{
+  "address": "irfCxPWpdsFS3fH73dfNZPpYfyABz5Xu1LYgtQnearn",
+  "metadata": {
+    "name": "earn",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "accept_admin",
+      "discriminator": [
+        112,
+        42,
+        45,
+        90,
+        116,
+        181,
+        13,
+        170
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pending_admin",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_split",
+      "docs": [
+        "Registers a fee split: 2 to 8 creator accounts whose shares add up to exactly 100%.",
+        "",
+        "The split is content-addressed: `split_key` must be the sha256 of the recipients (keys in",
+        "ascending order, each followed by its share), so one list has one address, anyone can create",
+        "it, and a token whose fee address is `[\"fee\", split_key]` can only ever be divided this way."
+      ],
+      "discriminator": [
+        196,
+        195,
+        250,
+        188,
+        17,
+        255,
+        10,
+        151
+      ],
+      "accounts": [
+        {
+          "name": "split",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  112,
+                  108,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "split_key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "split_key",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "recipients",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "Recipient"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "harvest",
+      "docs": [
+        "Splits everything above the rent floor that reached the fee address. Anyone may call it;",
+        "the split is fixed by `config`, not by the caller."
+      ],
+      "discriminator": [
+        228,
+        241,
+        31,
+        182,
+        53,
+        169,
+        59,
+        199
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fee_address",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  101,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "key",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "harvest_split",
+      "docs": [
+        "Like `harvest`, for a split fee address: everything above the rent floor is divided by the",
+        "registered shares into each recipient's account (the last one takes the rounding remainder,",
+        "so the shares add up to the gross exactly). Anyone may call it.",
+        "",
+        "Remaining accounts: the recipients' `CreatorAccount`s, in the split's order, all initialised."
+      ],
+      "discriminator": [
+        226,
+        77,
+        244,
+        50,
+        15,
+        19,
+        114,
+        56
+      ],
+      "accounts": [
+        {
+          "name": "fee_address",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  101,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "split_key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "split",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  112,
+                  108,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "split_key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "split_key",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "init_account",
+      "docs": [
+        "Creates a creator's account without a harvest, so it can receive shares of a split."
+      ],
+      "discriminator": [
+        169,
+        188,
+        158,
+        199,
+        9,
+        151,
+        101,
+        125
+      ],
+      "accounts": [
+        {
+          "name": "account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "key",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "docs": [
+        "Only the program's upgrade authority may initialise, so nobody can race the deploy and make",
+        "themselves admin. The admin it names does not sign (it can be a wallet the deployer does not hold)."
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "program",
+          "address": "irfCxPWpdsFS3fH73dfNZPpYfyABz5Xu1LYgtQnearn"
+        },
+        {
+          "name": "program_data"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "admin",
+          "type": "pubkey"
+        },
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "ConfigArgs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "propose_admin",
+      "docs": [
+        "Two-step so a typo cannot hand the program to nobody."
+      ],
+      "discriminator": [
+        121,
+        214,
+        199,
+        212,
+        87,
+        39,
+        117,
+        234
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "new_admin",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "set_config",
+      "discriminator": [
+        108,
+        158,
+        154,
+        175,
+        212,
+        98,
+        52,
+        66
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "ConfigArgs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "settle",
+      "docs": [
+        "Closes a `Usdc` withdrawal: the destination must now hold at least what `withdraw` required."
+      ],
+      "discriminator": [
+        175,
+        42,
+        185,
+        87,
+        144,
+        131,
+        102,
+        212
+      ],
+      "accounts": [
+        {
+          "name": "account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "account"
+              }
+            ]
+          }
+        },
+        {
+          "name": "destination"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw",
+      "docs": [
+        "Pays `lamports` of the account's credited share. The EARN signer co-signs: it is the server",
+        "that checked the creator's sign-in, and it chose `destination`.",
+        "",
+        "- `Sol`: lamports go straight to `destination`.",
+        "- `Usdc`: lamports go to the relayer (fee payer), which must swap them in this same",
+        "transaction into `destination`, a USDC token account; a later `settle` instruction checks",
+        "it grew by at least `min_out`, or the whole transaction reverts."
+      ],
+      "discriminator": [
+        183,
+        18,
+        70,
+        156,
+        148,
+        109,
+        161,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "relayer",
+          "docs": [
+            "Pays the transaction fee; receives the lamports to swap in `Usdc` mode."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "destination",
+          "writable": true
+        },
+        {
+          "name": "instructions",
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "key",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "lamports",
+          "type": "u64"
+        },
+        {
+          "name": "mode",
+          "type": {
+            "defined": {
+              "name": "PayoutMode"
+            }
+          }
+        },
+        {
+          "name": "min_out",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "CreatorAccount",
+      "discriminator": [
+        222,
+        163,
+        32,
+        169,
+        204,
+        8,
+        200,
+        32
+      ]
+    },
+    {
+      "name": "Split",
+      "discriminator": [
+        166,
+        254,
+        141,
+        46,
+        23,
+        221,
+        129,
+        195
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "Claimed",
+      "discriminator": [
+        217,
+        192,
+        123,
+        72,
+        108,
+        150,
+        248,
+        33
+      ]
+    },
+    {
+      "name": "ConfigChanged",
+      "discriminator": [
+        147,
+        25,
+        86,
+        98,
+        98,
+        77,
+        78,
+        192
+      ]
+    },
+    {
+      "name": "Paid",
+      "discriminator": [
+        240,
+        193,
+        17,
+        238,
+        238,
+        210,
+        129,
+        235
+      ]
+    },
+    {
+      "name": "SplitClaimed",
+      "discriminator": [
+        234,
+        11,
+        44,
+        178,
+        141,
+        137,
+        23,
+        193
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "BadRecipientBps",
+      "msg": "The creator gets 100%: EARN takes no cut"
+    },
+    {
+      "code": 6001,
+      "name": "ZeroAddress",
+      "msg": "Zero address"
+    },
+    {
+      "code": 6002,
+      "name": "NothingToHarvest",
+      "msg": "Nothing above the rent floor to harvest"
+    },
+    {
+      "code": 6003,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6004,
+      "name": "Paused",
+      "msg": "Withdrawals are paused"
+    },
+    {
+      "code": 6005,
+      "name": "ZeroAmount",
+      "msg": "Amount must be above zero"
+    },
+    {
+      "code": 6006,
+      "name": "DailyCapReached",
+      "msg": "Daily withdrawal ceiling reached"
+    },
+    {
+      "code": 6007,
+      "name": "WrongAccount",
+      "msg": "Account does not match key"
+    },
+    {
+      "code": 6008,
+      "name": "SettlementPending",
+      "msg": "A USDC withdrawal on this account is still open"
+    },
+    {
+      "code": 6009,
+      "name": "MoreThanOwed",
+      "msg": "More than the account is owed"
+    },
+    {
+      "code": 6010,
+      "name": "WrongDestination",
+      "msg": "Destination is not the pending one, or not a token account"
+    },
+    {
+      "code": 6011,
+      "name": "SwapShort",
+      "msg": "The swap delivered less than the minimum"
+    },
+    {
+      "code": 6012,
+      "name": "SettleMissing",
+      "msg": "A USDC withdrawal must be closed by settle in the same transaction"
+    },
+    {
+      "code": 6013,
+      "name": "WrongTreasury",
+      "msg": "Not the configured treasury"
+    },
+    {
+      "code": 6014,
+      "name": "WrongSigner",
+      "msg": "Not the configured signer"
+    },
+    {
+      "code": 6015,
+      "name": "NotPendingAdmin",
+      "msg": "Not the pending admin"
+    },
+    {
+      "code": 6016,
+      "name": "NotUpgradeAuthority",
+      "msg": "Only the program's upgrade authority can initialise"
+    },
+    {
+      "code": 6017,
+      "name": "BadSplit",
+      "msg": "A split has 2 to 8 distinct recipients in ascending key order, each with a share above zero"
+    },
+    {
+      "code": 6018,
+      "name": "SplitNotWhole",
+      "msg": "The shares must add up to exactly 100%"
+    },
+    {
+      "code": 6019,
+      "name": "WrongSplitKey",
+      "msg": "split_key is not the hash of these recipients"
+    }
+  ],
+  "types": [
+    {
+      "name": "Claimed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "gross",
+            "type": "u64"
+          },
+          {
+            "name": "to_recipient",
+            "type": "u64"
+          },
+          {
+            "name": "to_treasury",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "pending_admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "signer",
+            "type": "pubkey"
+          },
+          {
+            "name": "treasury",
+            "type": "pubkey"
+          },
+          {
+            "name": "recipient_bps",
+            "type": "u16"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          },
+          {
+            "name": "daily_cap",
+            "type": "u64"
+          },
+          {
+            "name": "window_start",
+            "type": "i64"
+          },
+          {
+            "name": "window_spent",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConfigArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "signer",
+            "type": "pubkey"
+          },
+          {
+            "name": "treasury",
+            "type": "pubkey"
+          },
+          {
+            "name": "recipient_bps",
+            "type": "u16"
+          },
+          {
+            "name": "daily_cap",
+            "type": "u64"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConfigChanged",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "recipient_bps",
+            "type": "u16"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreatorAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "fee_bump",
+            "type": "u8"
+          },
+          {
+            "name": "claimed",
+            "docs": [
+              "Gross fees ever harvested for this creator."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "credited",
+            "docs": [
+              "The recipient share of `claimed`."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "paid",
+            "docs": [
+              "Everything withdrawn. `credited - paid` is owed."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "pending_destination",
+            "type": "pubkey"
+          },
+          {
+            "name": "pending_min_balance",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Paid",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "lamports",
+            "type": "u64"
+          },
+          {
+            "name": "mode",
+            "type": {
+              "defined": {
+                "name": "PayoutMode"
+              }
+            }
+          },
+          {
+            "name": "destination",
+            "type": "pubkey"
+          },
+          {
+            "name": "min_out",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PayoutMode",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Sol"
+          },
+          {
+            "name": "Usdc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Recipient",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "bps",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Split",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "split_key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "recipients",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "Recipient"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SplitClaimed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "split_key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "gross",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}

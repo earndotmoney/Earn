@@ -1,0 +1,11 @@
+[Unit]
+Description=EARN keeper (claim pump.fun creator fees, push fomo payouts)
+
+[Service]
+Type=oneshot
+WorkingDirectory=/root/earn-api
+ExecStart=/usr/bin/node /root/earn-api/api/keeper-run.mjs
+EnvironmentFile=/root/earn-ops/api.env
+Environment=DATA_DIR=/var/lib/earn
+Nice=10
+TimeoutStartSec=600

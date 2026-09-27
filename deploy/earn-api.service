@@ -1,0 +1,22 @@
+[Unit]
+Description=EARN api (justearn.money)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/earn-api
+ExecStart=/usr/bin/node /root/earn-api/api/server.mjs
+# ⛔ Secrets live in the env file (0600), never in Environment= lines: unit files are world readable.
+EnvironmentFile=/root/earn-ops/api.env
+Environment=PORT=8820
+Environment=DATA_DIR=/var/lib/earn
+Environment=VANITY_DIR=/var/lib/earn/vanity-incoming
+Environment=GRIND_BIN=/root/earn-api/bin/earn-grind
+Environment=VANITY_THREADS=1
+# The grinder is a child process: keep the whole service polite to the other sites on this box.
+Nice=10
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
